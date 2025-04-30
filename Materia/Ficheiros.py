@@ -32,8 +32,10 @@ def Close_Automatico():
 
 def Seek_Como_Utilizar():
     with open("Alunos.txt", "r", encoding="utf=8") as F:
-        Texto = F.readline()
+        Texto = F.readline(-1)
         print(Texto)
         F.seek(0)
         Texto = F.readline()
         print(Texto)
+
+Seek_Como_Utilizar()
