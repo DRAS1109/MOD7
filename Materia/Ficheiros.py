@@ -37,5 +37,3 @@ def Seek_Como_Utilizar():
         F.seek(0)
         Texto = F.readline()
         print(Texto)
-
-Seek_Como_Utilizar()
