@@ -72,6 +72,9 @@ def LerFicheiro(Nome_Ficheiro):
 def Adicionar():
     Op = input("Adicionar [P]iloto ou [C]arro? ")
 
+    if not Op:
+        return
+
     if Op in "cC":
         #Ler os dados do carro
         Matricula = input("Qual a matricula do carro? ")
@@ -127,7 +130,21 @@ def Listar():
         print(Lista_Pilotos)
 
 def Pesquisar():
-    pass
+    Matricula = input("Qual a matricula do carro a pesquisar? ")
+    if Matricula:   #Mostrar os pilotos do carro
+        print(f"Pilotos da matricula: {Matricula}")
+        for Piloto in Lista_Pilotos:
+            if Piloto["Matricula"] == Matricula:
+                print(f"- {Piloto["Nome"]}")
+
+    Nome_Piloto = input("Qual o nome do piloto a pesquisar? ")
+    if Piloto:  #Mostrar o carro do piloto
+        for Piloto in Lista_Pilotos:
+            if Piloto["Nome"] == Nome_Piloto:
+                for Carro in Lista_Carros:
+                    if Piloto["Matricula"] == Carro["Matricula"]:
+                        print(f"O Piloto: {Nome_Piloto} tem o carro {Carro}")
+
 
 def ValidarMatricula(Matricula):
     """Devolve True se a matricula existir, False se não existir"""
