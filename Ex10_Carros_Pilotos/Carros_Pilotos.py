@@ -13,7 +13,14 @@ import csv, os
 FICHEIRO_PILOTOS = "Pilotos.csv"
 FICHEIRO_CARROS  = "Carros.csv"
 
+Lista_Pilotos = []
+Lista_Carros  = []
+
 def Menu():
+    global Lista_Pilotos, Lista_Carros
+    Lista_Pilotos = LerFicheiro(FICHEIRO_PILOTOS)
+    Lista_Carros  = LerFicheiro(FICHEIRO_CARROS)
+
     Op = 0
     while Op != 4:
         Op = int(input("1. Adicionar \n2. Listar \n3. Pesquisar \n4. Sair \n"))
@@ -67,14 +74,13 @@ def Adicionar():
 
     if Op in "cC":
         #Ler os dados do carro
-        Marca     = input("Qual a marca do carro? ")
-        Modelo    = input("Qual o modelo do carro? ")
         Matricula = input("Qual a matricula do carro? ")
-
-        for Carro in Lista_Carros:
-            if Carro["Matricula"] == Matricula:
-                print("Erro! Essa matricula já existe")
-                return
+        if ValidarMatricula(Matricula) == True:
+            print("Erro! Essa matricula já existe")
+            return
+        
+        Marca  = input("Qual a marca do carro? ")
+        Modelo = input("Qual o modelo do carro? ")
 
         #Criar um dicionario
         Dicionario = {"Marca": Marca, "Modelo": Modelo, "Matricula": Matricula}
@@ -84,21 +90,22 @@ def Adicionar():
 
         #Escrever no Ficheiro dos carros
         Escrever(Lista_Carros, FICHEIRO_CARROS)
+        print("Carro adicionado com susesso! ")
 
     if Op in "pP":
         #Ler os dados do carro
+        Matricula = input("Qual a matricula do veículo? ")
+        if ValidarMatricula(Matricula) == False:
+            print("Erro! Essa matricula não existe na base de dados")
+            return
+        
+        if ValidarNrMatriculas(Matricula) >= 2:
+            print("Já existem 2 pilotos no carro")
+            return
+        
         Nome  = input("Qual a nome do piloto? ")
         Idade = input("Qual o idade do piloto? ")
         Pais  = input("Qual a país do piloto? ")
-        Matricula = input("Qual a matricula do carro? ")
-
-        Carro = False
-        for Carro in Lista_Carros:
-            if Carro["Matricula"] == Matricula:
-                Carro = True
-
-        if Carro == False:
-            print("Erro! Essa matricula não existe na base de dados")
 
 
         #Criar um dicionario
@@ -109,15 +116,34 @@ def Adicionar():
 
         #Escrever no Ficheiro dos pilotos
         Escrever(Lista_Pilotos, FICHEIRO_PILOTOS)
+        print("Piloto adicionado com susesso! ")
 
 def Listar():
-    pass
+    Op = input("Listar [P]iloto ou [C]arro? ")
+    if Op in "cC":
+        print(Lista_Carros)
+    
+    if Op in "pP":
+        print(Lista_Pilotos)
 
 def Pesquisar():
     pass
 
-Lista_Pilotos = LerFicheiro(FICHEIRO_PILOTOS)
-Lista_Carros  = LerFicheiro(FICHEIRO_CARROS)
+def ValidarMatricula(Matricula):
+    """Devolve True se a matricula existir, False se não existir"""
+    for Carro in Lista_Carros:
+        if Carro["Matricula"] == Matricula:
+            return True
+    return False
+
+def ValidarNrMatriculas(Matricula):
+    """Devolve nº de pilotos de um carro"""
+    Contar = 0
+    for p in Lista_Pilotos:
+        if p["Matricula"] == Matricula:
+            Contar += 1
+
+    return Contar
 
 if __name__ == "__main__":
     Menu()
