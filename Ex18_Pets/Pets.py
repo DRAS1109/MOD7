@@ -84,23 +84,23 @@ def Listar():
                 
             Dados = struct.unpack("30s", Dados_Binarios)
             Raca = Dados[0].decode("utf-8").rstrip("\x00")
-            print("Raça: ", Raca)
+            print("Raça:", Raca)
 
             #Ler os dados todos de uma vez só
             Dados_Binarios = Ficheiro.read(4)
             Dados = struct.unpack("f", Dados_Binarios)
-            print("Peso: ", Dados[0])
+            print("Peso:", round(Dados[0], 3))
 
             #Ler e mostrar os dados todos de uma vez só
             Dados_Binarios = Ficheiro.read(1)
             Dados = struct.unpack("1s", Dados_Binarios)
             Genero = Dados[0].decode("utf-8").rstrip("\x00")
-            print("Género: ", Genero)
+            print("Género:", Genero)
 
             #Ler os dados todos de uma vez só
             Dados_Binarios = Ficheiro.read(4)
             Dados = struct.unpack("f", Dados_Binarios)
-            print("Preço:", Dados[0])
+            print("Preço:", round(Dados[0], 3))
 
 def Apagar():
     if Existe() == False:
@@ -124,20 +124,66 @@ def Apagar():
 
                 #Mostrar ao utilizador
                 Raca = struct.unpack("30s", Raca_Binarios)
-                print("Raça: ", Raca)
+                print("Raça:", Raca[0].decode("utf-8").rstrip("\x00"))
                 #se NÂO é para apagar gravar o ficheiro temp
+                Op = input("Pretende apagar este animal? ")
+                if Op not in ("sS"):
+                    F_Escrever.write(Raca_Binarios)
+                    F_Escrever.write(Peso_Binario)
+                    F_Escrever.write(Genero_Binario)
+                    F_Escrever.write(Preco_Binario)
 
-        #apagar o ficheiro de dados
+    #apagar o ficheiro de dados
+    os.remove(NOME_FICHEIRO)
 
-
+    #Mudar o nome do ficheiro temporario
+    os.rename("temp.bin", NOME_FICHEIRO)
+    print("Animal removido com sucesso")
 
 def Editar():
     if Existe() == False:
         print("Ainda não tem dados")
         return
+    
+    #Abrir o ficheiro para leitura e escrita
+    with open(NOME_FICHEIRO, "rb+") as Ficheiro:
+        while True:
+            #Ler um registo
+            Raca_Binario = Ficheiro.read(30)
+            if not Raca_Binario:
+                break
+                    
+            Peso_Binario = Ficheiro.read(4)
+            Genero_Binario = Ficheiro.read(1)
+            Preco_Binario = Ficheiro.read(4)
+        
+            #Mostrar ao utilizador
+            Raca = struct.unpack("30s", Raca_Binario)[0]
+            Raca = Raca.decode("utf-8").rstrip("\x00")
+            Peso = struct.unpack("f", Peso_Binario)[0]
+            Genero = struct.unpack("1s", Genero_Binario)[0]
+            Genero = Genero.decode("utf-8").rstrip("\x00")
+            Preco = struct.unpack("f", Preco_Binario)[0]
+
+            print(f"{Raca} | {round(Peso,3)} | {Genero} | {round(Preco,3)}")
+            Op = input("Pretende editar este animal [S]im / [N]ão?")
+
+            #Perguntar se quer alterar
+            if Op in "sS":
+                Raca = input("Qual a raça? ")
+                Peso = Utils.Ler_Decimal("Qual o peso? ")
+                Genero = Utils.Ler_Strings(1, "Qual o género ([F]emenino / [M]asculino)? ")
+                Preco = Utils.Ler_Decimal("Qual o preço? ")
+
+                #Se alterar gravar novamente o mesmo registo
+                Ficheiro.seek(-39, 1)
+                Ficheiro.write(struct.pack("30s", Raca.encode("utf-8")  ))
+                Ficheiro.write(struct.pack("f"  , Peso ))
+                Ficheiro.write(struct.pack("1s" , Genero.encode("utf-8")))
+                Ficheiro.write(struct.pack("f"  , Preco))
 
 def Sair():
-    """Função para sair do programa. Medo..."""
+    """Função para sair do programa. Foi dificil..."""
     return "return"
 
 def Existe():
