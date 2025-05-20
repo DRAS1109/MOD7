@@ -16,15 +16,15 @@ Modulo para gerir as visitas Guiadas ao museu
     - Listar (Visita 9-10: 30 pessoas | Visita 11-12: 27 pessoas)
 """
 import Utils
-import os
+import os, struct
 
-Visitas = [{"Visita": 1, "Horario": "9-10" , "Lotacao": 0, "Lotacao Maxima": 30, "Id": {}},
-           {"Visita": 2, "Horario": "11-12", "Lotacao": 0, "Lotacao Maxima": 30, "Id": {}},
-           {"Visita": 3, "Horario": "15-16", "Lotacao": 0, "Lotacao Maxima": 30, "Id": {}},
-           {"Visita": 4, "Horario": "17-18", "Lotacao": 0, "Lotacao Maxima": 30, "Id": {}}]
+NOME_FICHEIRO = "Visitas.bin"
+Formato = "i5sii"
+
+Visitas = []
 
 #Dicionario para guardar os campos e o comprimento da maior palavra de cada campo
-Campos = {"Visita": 1, "Horario": 5, "Lotacao": 1,"Lotacao Maxima": 2} #Começa com valores pois existem visitas pre definidas
+Campos = {"Visita": 0, "Horario": 0, "Lotacao": 0,"Lotacao Maxima": 0}
 
 #Adicionar Horario
 def Adicionar_Horario():
@@ -352,11 +352,64 @@ def Verificar():
     
 #Configurar: Adiciona dados de teste
 def Configurar():
-    Visitas[0]["Lotacao"] = 8
-    Visitas[0]["Id"].update({1: 8})
+    Visitas.append({"Visita": 1, "Horario": "9-10" , "Lotacao": 8,  "Lotacao Maxima": 30, "Id": {1:8}})
+    Visitas.append({"Visita": 2, "Horario": "11-12", "Lotacao": 21, "Lotacao Maxima": 30, "Id": {1:6, 2:12, 3:3}})
+    Visitas.append({"Visita": 3, "Horario": "15-16", "Lotacao": 0,  "Lotacao Maxima": 30, "Id": {}})
+    Visitas.append({"Visita": 4, "Horario": "17-18", "Lotacao": 15, "Lotacao Maxima": 30, "Id": {1:3, 2:12}})
 
-    Visitas[1]["Lotacao"] = 21
-    Visitas[1]["Id"].update({1:6, 2:12, 3:3})
+    #Maior tamanho de cada campo dos dados de teste
+    Campos["Visita"] = 1
+    Campos["Horario"] = 5
+    Campos["Lotacao"] = 1
+    Campos["Lotacao Maxima"] = 2
 
-    Visitas[3]["Lotacao"] = 15
-    Visitas[3]["Id"].update({1:3, 2:12})
+
+def GuardarDados():
+    """Função para guardar os dados de Visitas num ficheiro binario"""
+    if Verificar() == True:
+        return
+    
+    with open(NOME_FICHEIRO, "wb") as Ficheiro:
+        for Visita in Visitas:
+            NVisita        = Visita["Visita"] #Inteiro
+            Horario        = Visita["Horario"] #String 5 caracteres
+            Lotacao        = Visita["Lotacao"] #Inteiro
+            Lotacao_Maxima = Visita["Lotacao Maxima"] #Inteiro
+
+            #Adicionar ao ficheiro
+            Dados_Empacotados = struct.pack(Formato,
+                                            NVisita,
+                                            Horario.encode("utf-8"),
+                                            Lotacao,
+                                            Lotacao_Maxima)
+                                           
+            Ficheiro.write(Dados_Empacotados)
+
+def LerDados():
+    """Função para ler os dados de um ficheiro binario"""
+    if os.path.exists(NOME_FICHEIRO) == False:
+        return
+    
+    with open(NOME_FICHEIRO, "rb") as Ficheiro:
+        while True:
+            try:
+                #Ler os dados todos de uma vez só
+                Dados_Binarios = Ficheiro.read(20)
+                if not Dados_Binarios:
+                    break
+
+                #Converter os dados
+                Dados = struct.unpack(Formato, Dados_Binarios)
+
+                #Adicionar os dados
+                Visita = {"Visita":         Dados[0], 
+                          "Horario":        Dados[1].decode("utf-8").rstrip("\x00"),
+                          "Lotacao":        Dados[2],
+                          "Lotacao Maxima": Dados[3],
+                          "Id":             {}}
+
+                #Adicionar as obras
+                Visitas.append(Visita)
+
+            except EOFError:
+                break

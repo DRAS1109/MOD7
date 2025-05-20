@@ -8,7 +8,7 @@ import os, struct
 #Nome do ficheiro
 NOME_FICHEIRO = "Obras.bin"
 #Formato em que os dados são armazenadas
-Formato = "i35si35sf8s106s"
+Formato = "i35si35sf8s100s"
 
 #Lista das obras:
 Colecao = []
@@ -328,19 +328,19 @@ def Configurar():
     Colecao.extend(Exemplo_Obras) #append adiciona, extend junta
 
 def GuardarDados():
-    """Função para guardar os dados em um ficheiro binario"""
+    """Função para guardar os dados de Obras num ficheiro binario"""
     if Verificar() == True:
         return
     
     with open(NOME_FICHEIRO, "wb") as Ficheiro:
         for Obra in Colecao:
             Id          = Obra["Id"] #Inteiro
-            Tipo        = Obra["Tipo"] #String 30 caracteres
+            Tipo        = Obra["Tipo"] #String 35 caracteres
             Ano         = Obra["Ano"] #Inteiro
-            Autor       = Obra["Autor"] #String 40 caracteres
+            Autor       = Obra["Autor"] #String 35 caracteres
             Preco_Atual = Obra["Preco Atual"] #Float
             Raridade    = Obra["Raridade"] #String 8 caracteres
-            Descricao   = Obra["Descricao"] #String 100 Caracteres
+            Descricao   = Obra["Descricao"] #String 106 Caracteres
 
             #Adicionar ao ficheiro
             Dados_Empacotados = struct.pack(Formato,
@@ -355,7 +355,7 @@ def GuardarDados():
             Ficheiro.write(Dados_Empacotados)
 
 def LerDados():
-    """Função para ler os dados de um ficheiro de texto"""
+    """Função para ler os dados de um ficheiro binario"""
     if os.path.exists(NOME_FICHEIRO) == False:
         return
     
@@ -363,7 +363,7 @@ def LerDados():
         while True:
             try:
                 #Ler os dados todos de uma vez só
-                Dados_Binarios = Ficheiro.read(200)
+                Dados_Binarios = Ficheiro.read(192)
                 if not Dados_Binarios:
                     break
 
@@ -371,7 +371,13 @@ def LerDados():
                 Dados = struct.unpack(Formato, Dados_Binarios)
 
                 #Adicionar os dados
-                Obra = {"Id": Dados[0], "Tipo": Dados[1].rstrip("\x00"), "Ano": Dados[2], "Autor": Dados[3].rstrip("\x00"), "Preco Atual": Dados[4], "Raridade": Dados[5].rstrip("\x00"), "Descricao": Dados[6].rstrip("\x00")}
+                Obra = {"Id":          Dados[0], 
+                        "Tipo":        Dados[1].decode("utf-8").rstrip("\x00"), 
+                        "Ano":         Dados[2], 
+                        "Autor":       Dados[3].decode("utf-8").rstrip("\x00"), 
+                        "Preco Atual": Dados[4], 
+                        "Raridade":    Dados[5].decode("utf-8").rstrip("\x00"), 
+                        "Descricao":   Dados[6].decode("utf-8").rstrip("\x00")}
 
                 #Adicionar as obras
                 Colecao.append(Obra)

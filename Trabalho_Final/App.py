@@ -24,6 +24,7 @@ def MenuPrincipal():
         Visitas.Configurar()
 
     Obras.LerDados()
+    Visitas.LerDados()
 
     while True:
         os.system("cls")
@@ -45,6 +46,7 @@ def MenuPrincipal():
             Estatisticas.MenuEstatisticas()
         
         Obras.GuardarDados()
+        Visitas.GuardarDados()
 
 if __name__ == "__main__":
     MenuPrincipal()
