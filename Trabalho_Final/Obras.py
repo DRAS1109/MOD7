@@ -17,11 +17,13 @@ Colecao = []
 Raridades = ["Comum", "Raro", "Epico", "Lendario", "Mitico"]
 
 #Dicionario para guardar os campos e o comprimento da maior palavra de cada campo
-Campos = {"Id": 0, "Tipo": 0, "Ano": 0, "Autor": 0} 
+Campos = {"Id": 0, "Tipo": 0, "Ano": 0, "Autor": 0}
 
 #Menu Obras
 def MenuObras():
     """SubMenu para as obras"""
+
+    LerBinario()
 
     while True:
         Op = Utils.Menu(["Adicionar", "Editar", "Apagar", "Listar", "Pesquisar", "Voltar"], "Menu de Obras")
@@ -32,12 +34,15 @@ def MenuObras():
 
         elif Op == 1:
             Adicionar()
+            GuardarBinario()
 
         elif Op == 2:
             Editar()
+            GuardarBinario()
         
         elif Op == 3:
             Apagar()
+            GuardarBinario()
 
         elif Op == 4:
             Listar(Colecao)
@@ -221,7 +226,7 @@ def Listar(Colecao, Titulo = "Lista de Obras", Campos = Campos):
             if len(str(Obra[Campo])) > Campos[Campo]:
                 Campos[Campo] = len(str(Obra[Campo])) #Guardar o tamanho da maior palavra de cada campo
 
-    #Descobiri o tamanho da linha --------------
+    #Descobrir o tamanho da linha --------------
     Tamanho = 0
     for Campo in Campos:
         Tamanho += Campos[Campo] + len(Campo)
@@ -327,7 +332,7 @@ def Configurar():
     #Adicionar as obras
     Colecao.extend(Exemplo_Obras) #append adiciona, extend junta
 
-def GuardarDados():
+def GuardarBinario():
     """Função para guardar os dados de Obras num ficheiro binario"""
     if Verificar() == True:
         return
@@ -354,10 +359,13 @@ def GuardarDados():
             
             Ficheiro.write(Dados_Empacotados)
 
-def LerDados():
+def LerBinario():
     """Função para ler os dados de um ficheiro binario"""
     if os.path.exists(NOME_FICHEIRO) == False:
         return
+    
+    global Colecao
+    Colecao.clear()
     
     with open(NOME_FICHEIRO, "rb") as Ficheiro:
         while True:

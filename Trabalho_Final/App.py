@@ -23,8 +23,8 @@ def MenuPrincipal():
         Obras.Configurar()
         Visitas.Configurar()
 
-    Obras.LerDados()
-    Visitas.LerDados()
+    Obras.LerBinario()
+    Visitas.LerBinario()
 
     while True:
         os.system("cls")
@@ -45,8 +45,8 @@ def MenuPrincipal():
         if Op == 3:
             Estatisticas.MenuEstatisticas()
         
-        Obras.GuardarDados()
-        Visitas.GuardarDados()
+        Obras.GuardarBinario()
+        Visitas.GuardarBinario()
 
 if __name__ == "__main__":
     MenuPrincipal()

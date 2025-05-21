@@ -19,7 +19,7 @@ import Utils
 import os, struct
 
 NOME_FICHEIRO = "Visitas.bin"
-Formato = "i5sii"
+Formato = "i5sii120s"
 
 Visitas = []
 
@@ -72,7 +72,7 @@ def Adicionar_Horario():
                 "Horario": Horario,
                 "Lotacao": 0, 
                 "Lotacao Maxima": Lotacao_Maxima,
-                "Id": []}
+                "Id": {}}
     
     Visitas.append(Nova_Obra)
     print(f"Visita adicionada com sucesso. \n")
@@ -185,38 +185,6 @@ def Apagar():
             if len(str(Visita[Campo])) > Campos[Campo]:
                 Campos[Campo] = len(str(Visita[Campo]))
 
-#Listar 
-def Listar(Visitas, Titulo = "Lista de Visitas"):
-    """Função para listar os campos (Visita, Horario e Lotação maxima) de todas as Visitas"""
-
-    if Verificar() == True:
-        return
-
-    #Descobrir o tamanho da linha --------------
-    Tamanho = 0
-    for Campo in Campos:
-        Tamanho += Campos[Campo] + len(Campo)
-
-    #Adicionar à variavel tamanho os "extras" (espaços, : e |)
-    Extras = (len(Campos) *2) + (len(Campos) *3) + 1 # Espaços, : e | + 1 para o primeiro e último |
-    Tamanho += Extras  
-    
-    #Imprimir Titulo
-    Utils.F_Titulo(Titulo)
-
-    #Imprimir os dados
-    print("-" * Tamanho)
-
-    for Visita in Visitas:
-        Linha = ""
-        for Campo in Campos:
-            CampoTexto = f"{Campo}: {Visita[Campo]}"
-            Espacos = " " * (Campos[Campo] - len(str(Visita[Campo])))
-            Linha += f"| {CampoTexto}{Espacos} "
-        Linha += "|"
-        print(Linha)
-        print("-" * Tamanho)
-
 
 #Adicionar Visitantes
 def Adicionar_Visitantes():
@@ -286,11 +254,45 @@ def Cancelar_Visitantes():
     del Visita["Id"][Id]
 
 
+#Listar 
+def Listar(Visitas, Titulo = "Lista de Visitas"):
+    """Função para listar os campos (Visita, Horario e Lotação maxima) de todas as Visitas"""
+
+    if Verificar() == True:
+        return
+
+    #Descobrir o tamanho da linha --------------
+    Tamanho = 0
+    for Campo in Campos:
+        Tamanho += Campos[Campo] + len(Campo)
+
+    #Adicionar à variavel tamanho os "extras" (espaços, : e |)
+    Extras = (len(Campos) *2) + (len(Campos) *3) + 1 # Espaços, : e | + 1 para o primeiro e último |
+    Tamanho += Extras  
+    
+    #Imprimir Titulo
+    Utils.F_Titulo(Titulo)
+
+    #Imprimir os dados
+    print("-" * Tamanho)
+
+    for Visita in Visitas:
+        Linha = ""
+        for Campo in Campos:
+            CampoTexto = f"{Campo}: {Visita[Campo]}"
+            Espacos = " " * (Campos[Campo] - len(str(Visita[Campo])))
+            Linha += f"| {CampoTexto}{Espacos} "
+        Linha += "|"
+        print(Linha)
+        print("-" * Tamanho)
+
+
 #Menu para Horarios
 def Menu_Horarios():
     """SubMenu para os horarios das visitas"""
+
     while True:
-        Op = Utils.Menu(["Adicionar", "Editar", "Apagar","Listar","Voltar"], "Menu dos horarios")
+        Op = Utils.Menu(["Adicionar", "Editar", "Apagar","Voltar"], "Menu dos horarios")
         print("")
 
         if Op == 0:
@@ -304,13 +306,11 @@ def Menu_Horarios():
         
         elif Op == 3:
             Apagar()
-        
-        elif Op == 4:
-            Listar(Visitas)
-
+            
 #Menu para Visitas Guiadas
 def Menu_Visitas_Guiadas():
     """SubMenu para as visitas guiadas"""
+
     while True:
         Op = Utils.Menu(["Adicionar Visitantes", "Cancelar Visitas", "Voltar"], "Menu das visitas guiadas")
         print("")
@@ -328,10 +328,10 @@ def Menu_Visitas_Guiadas():
 def MenuVisitas():
     """Menu para visitas"""
     os.system("cls")
+    LerBinario()
 
     while True:
-        os.system("cls")
-        Op = Utils.Menu(["Horarios", "Visitante","Voltar"], "Menu de visitas")
+        Op = Utils.Menu(["Horarios", "Visitante", "Listar", "Voltar"], "Menu de visitas")
         os.system("cls")
 
         if Op == 0:
@@ -343,6 +343,18 @@ def MenuVisitas():
         elif Op == 2:
             Menu_Visitas_Guiadas()
 
+        elif Op == 3:
+            Op2 = Utils.Menu(["Visitas", "Marcações"], "O que pretende listar?")
+
+            if Op2 == 1:
+                Listar(Visitas)
+            
+            if Op2 == 2:
+                Listar(Visitas)
+        
+        GuardarBinario()
+
+
 #Verificar se a lista de visitas está vazia
 def Verificar():
     #Verificar se existem visitas guiadas
@@ -353,9 +365,8 @@ def Verificar():
 #Configurar: Adiciona dados de teste
 def Configurar():
     Visitas.append({"Visita": 1, "Horario": "9-10" , "Lotacao": 8,  "Lotacao Maxima": 30, "Id": {1:8}})
-    Visitas.append({"Visita": 2, "Horario": "11-12", "Lotacao": 21, "Lotacao Maxima": 30, "Id": {1:6, 2:12, 3:3}})
-    Visitas.append({"Visita": 3, "Horario": "15-16", "Lotacao": 0,  "Lotacao Maxima": 30, "Id": {}})
-    Visitas.append({"Visita": 4, "Horario": "17-18", "Lotacao": 15, "Lotacao Maxima": 30, "Id": {1:3, 2:12}})
+    Visitas.append({"Visita": 2, "Horario": "11-12", "Lotacao": 21, "Lotacao Maxima": 30, "Id": {1:6,2:12,3:3}})
+    Visitas.append({"Visita": 3, "Horario": "17-18", "Lotacao": 15, "Lotacao Maxima": 30, "Id": {1:3,2:12}})
 
     #Maior tamanho de cada campo dos dados de teste
     Campos["Visita"] = 1
@@ -363,8 +374,8 @@ def Configurar():
     Campos["Lotacao"] = 1
     Campos["Lotacao Maxima"] = 2
 
-
-def GuardarDados():
+#Guardar e ler os ficheiros binarios
+def GuardarBinario():
     """Função para guardar os dados de Visitas num ficheiro binario"""
     if Verificar() == True:
         return
@@ -375,26 +386,32 @@ def GuardarDados():
             Horario        = Visita["Horario"] #String 5 caracteres
             Lotacao        = Visita["Lotacao"] #Inteiro
             Lotacao_Maxima = Visita["Lotacao Maxima"] #Inteiro
+            Id = str(Visita["Id"])
+            Id = Id.strip("{}")
 
             #Adicionar ao ficheiro
             Dados_Empacotados = struct.pack(Formato,
                                             NVisita,
                                             Horario.encode("utf-8"),
                                             Lotacao,
-                                            Lotacao_Maxima)
+                                            Lotacao_Maxima,
+                                            Id.encode("utf-8"))
                                            
             Ficheiro.write(Dados_Empacotados)
 
-def LerDados():
+def LerBinario():
     """Função para ler os dados de um ficheiro binario"""
     if os.path.exists(NOME_FICHEIRO) == False:
         return
     
+    global Visitas
+    Visitas.clear()
+
     with open(NOME_FICHEIRO, "rb") as Ficheiro:
         while True:
             try:
                 #Ler os dados todos de uma vez só
-                Dados_Binarios = Ficheiro.read(20)
+                Dados_Binarios = Ficheiro.read(140)
                 if not Dados_Binarios:
                     break
 
@@ -407,6 +424,14 @@ def LerDados():
                           "Lotacao":        Dados[2],
                           "Lotacao Maxima": Dados[3],
                           "Id":             {}}
+
+                #Adicionar o id das visitas
+                Ids = Dados[4].decode("utf-8").rstrip("\x00")
+                if Ids != "":
+                    Ids = Ids.split(",")
+                    for Id in Ids:
+                        L_Id = Id.split(":")
+                        Visita["Id"].update({int(L_Id[0]):int(L_Id[1])})
 
                 #Adicionar as obras
                 Visitas.append(Visita)
