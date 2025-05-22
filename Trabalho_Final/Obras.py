@@ -16,9 +16,6 @@ Colecao = []
 #Lista de raridades das obras
 Raridades = ["Comum", "Raro", "Epico", "Lendario", "Mitico"]
 
-#Dicionario para guardar os campos e o comprimento da maior palavra de cada campo
-Campos = {"Id": 0, "Tipo": 0, "Ano": 0, "Autor": 0}
-
 #Menu Obras
 def MenuObras():
     """SubMenu para as obras"""
@@ -56,16 +53,12 @@ def Adicionar():
 
     #Tipo
     Tipo = Utils.Ler_Strings(2, "Qual o tipo da obra? ")
-    if len(Tipo) > Campos["Tipo"]:
-        Campos["Tipo"] = len(Tipo)
 
     #Ano
     Ano = Adicionar_Ano()
 
     #Autor
     Autor = Utils.Ler_Strings(2, "Qual o autor da obra? ")
-    if len(Autor) > Campos["Autor"]:
-        Campos["Autor"] = len(Autor)
 
     #Preço Atual
     while True:
@@ -87,9 +80,6 @@ def Adicionar():
     Id = 1
     if len(Colecao) > 0:
         Id = Colecao[len(Colecao) - 1]["Id"] + 1 #Gera o id a partir do id da ultima obra
-    
-    if len(str(Id)) > Campos["Id"]:
-        Campos["Id"] = len(str(Id))
 
     Nova_Obra ={"Id": Id,
                 "Tipo": Tipo,
@@ -171,10 +161,6 @@ def Editar():
     Obra_Encontrada[Campo] = Novo_Valor
     print("Edição concluida com sucesso.")
 
-    if Campo in Campos:
-        if len(str(Novo_Valor)) > Campos[Campo]:
-            Campos[Campo] = len(str(Novo_Valor))
-
 #Apagar
 def Apagar():
     if Verificar() == True:
@@ -208,17 +194,14 @@ def Apagar():
     Colecao.remove(Obra_Encontrada)
     print(f"Obra removida com sucesso, tem {len(Colecao)} obras")
 
-    #Determinar a maior palavra de cada campo pois o maior pode ter sido eliminado
-    for Obra in Colecao:
-        for Campo in Campos:
-            if len(str(Obra[Campo])) > Campos[Campo]:
-                Campos[Campo] = len(str(Obra[Campo]))
-
 #Listar
-def Listar(Colecao, Titulo = "Lista de Obras", Campos = Campos):
+def Listar(Colecao, Titulo = "Lista de Obras"):
     """Função para listar os campos (Id, Tipo, Ano, Autor) de todas as obras"""
     if Verificar() == True:
         return
+
+    #Dicionario para guardar os campos e o comprimento da maior palavra de cada campo
+    Campos = {"Id": 0, "Tipo": 0, "Ano": 0, "Autor": 0}
 
     #Determinar a maior palavra de cada campo
     for Obra in Colecao:
@@ -232,10 +215,7 @@ def Listar(Colecao, Titulo = "Lista de Obras", Campos = Campos):
         Tamanho += Campos[Campo] + len(Campo)
 
     #Adicionar à variavel tamanho os "extras" (espaços, : e |)
-    Extras = (len(Campos) *2) + (len(Campos) *3) + 1
-        #*2 porque cada campo tem : e espaços
-        #*3 porque cada campo tem espaço | espaço
-        #+1 porque começa e termina com 1 |
+    Extras = (len(Campos) *2) + (len(Campos) *3) + 1 # Espaços, : e | + 1 para o primeiro e último |
     Tamanho += Extras  
 
     #Imprimir Titulo
@@ -318,8 +298,6 @@ def Adicionar_Ano():
 
     Ano = Utils.Ler_Inteiro_Limites(-4543000000, Ano_Atual, "Introduza o ano criação da obra: ")
 
-    if len(str(Ano)) > Campos["Ano"]:
-        Campos["Ano"] = len(str(Ano))
     return Ano
 
 #Configurar

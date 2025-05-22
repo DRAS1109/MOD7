@@ -5,19 +5,23 @@
 - Todos os autores
 - Horario mais visitado
 """
-import Utils, Obras, Visitas
+import Utils, Obras, Visitas, Visitantes, datetime
 
-def MenuEstatisticas():
+def MenuVisitantes():
     """Menu para visitas"""
 
+    Existe_Obras = Obras.LerBinario()
+    Existe_Visitas = Visitas.LerBinario()
+    Existe_Visitantes = Visitantes.LerCSV()
+
     while True:
-        Op = Utils.Menu(["Raridades", "Valor da coleção","Obra mais antiga", "Todos os autores", "Horario mais visitado", "Voltar"], "Menu de estatisticas")
+        Op = Utils.Menu(["Raridades", "Valor da coleção","Obra mais antiga", "Todos os autores", "Visitas Futuras", "Voltar"], "Menu de estatisticas")
         print("")
 
         if Op == 0:
             break
 
-        elif Op == 1:
+        elif Op == 1 :
             E_Raridades()
 
         elif Op == 2:
@@ -30,7 +34,7 @@ def MenuEstatisticas():
             E_Autores()
         
         elif Op == 5:
-            E_Horario()
+            Visitas_Futuras()
     
 
 def E_Raridades():
@@ -94,22 +98,10 @@ def E_Autores():
     for Autor in Autores:
         print(f" - {Autor}")
 
-def E_Horario():
-    #Verificar se a lotação não está a zero
-    Lotacao = False
-    for Visita in Visitas.Visitas:
-        if Visita["Lotacao"] > 0:
-            Lotacao = True
+def Visitas_Futuras():
+    Total = 0
+    for Visitas in Visitantes.Datas.values():
+            for Grupos in Visitas.values():
+                Total += sum(Grupos.values())
 
-    if Lotacao == False:
-        print("Ainda ninguem visitou o seu museu")
-        return
-    
-    #Encontrar o mais visitado
-    Maior = 0
-    for Visita in Visitas.Visitas:
-            if Visita["Lotacao"] > Maior:
-                Maior = Visita["Lotacao"]
-                R_Maior = Visita["Horario"]
-
-    print(f"O horario mais visitado é: {R_Maior}, com {Maior} visitantes")
+    print(f"Total de pessoas com visitas futuras agendadas: {Total}")

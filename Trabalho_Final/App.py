@@ -12,23 +12,25 @@ Utilizar set:
 
 Para o módulo 7 foi acrescentado a materialização dos dados
 """
-import Utils, Obras, Visitas, Estatisticas
+import Utils, Obras, Visitas, Visitantes, Estatisticas
 import os
 
 #Deve estar True quando em testes e False quando em produção
 DEBUG = False
+
+#TODO: erro de compactamento com numeros mt grandes
 
 def MenuPrincipal():
     if DEBUG:
         Obras.Configurar()
         Visitas.Configurar()
 
-    Obras.LerBinario()
     Visitas.LerBinario()
+    Visitantes.LerCSV()
 
     while True:
         os.system("cls")
-        Op = Utils.Menu(["Obras", "Visitas", "Estatísticas", "Sair"], "Menu Principal")
+        Op = Utils.Menu(["Obras", "Horarios Visitas", "Visitantes", "Estatísticas", "Sair"], "Menu Principal")
         print("")
 
         if Op == 0:
@@ -43,10 +45,10 @@ def MenuPrincipal():
             Visitas.MenuVisitas()
         
         if Op == 3:
-            Estatisticas.MenuEstatisticas()
-        
-        Obras.GuardarBinario()
-        Visitas.GuardarBinario()
+            Visitantes.MenuVisitantes()
+
+        if Op == 4:
+            Estatisticas.MenuVisitantes()
 
 if __name__ == "__main__":
     MenuPrincipal()

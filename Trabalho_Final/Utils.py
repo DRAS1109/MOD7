@@ -88,11 +88,8 @@ def Ler_Decimal_Limites(Min, Max=None, Mensagem="Introduza um valor inteiro: ") 
             return X
         
 def Ler_Nome_Litimes(Min, Max=None, Mensagem="Introduza uma palavra: "):
-    """
-    Função que recebe o valor Min e Max de letras a ler do utilizador.
-    Também garante que a palavra inserido é válido.
-    """
-
+    """Função que recebe o valor Min e Max de letras a ler do utilizador.
+    Também garante que a palavra inserido é válido."""
     while True:
         Nome = input(Mensagem).strip()
         if (Min == None and len(Nome) <= Max) or (Max == None and len(Nome) >= Min) or (len(Nome) >= Min and len(Nome) <= Max):
@@ -133,7 +130,6 @@ def Menu(Opcoes, Titulo=""):
 
 def Media(Valores):
     """Devolve a média dos valores de um tuple ou lista"""
-
     return sum(Valores/len(Valores))
 
 #Alterado a 12-03-2025
